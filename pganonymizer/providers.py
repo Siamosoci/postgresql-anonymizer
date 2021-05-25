@@ -1,4 +1,5 @@
 import random
+import uuid
 from hashlib import md5
 
 from faker import Faker
@@ -114,6 +115,188 @@ class MD5Provider(with_metaclass(ProviderMeta, Provider)):
     def alter_value(self, value):
         return md5(value.encode('utf-8')).hexdigest()
 
+class FiscalCodeProvider(with_metaclass(ProviderMeta, Provider)):
+    """Provider to hash a fiscal code."""
+
+    id = 'fiscalcode'
+
+    def alter_value(self, value):
+        crypt_fiscal_code=md5(value.encode('utf-8')).hexdigest()
+
+        def check_day(numbers):
+            if(int(numbers[3])>7):
+                numbers[3]=str(1)
+            return numbers[3:5]
+        
+        def check_month(character):
+            char_month = ['A','B','C','D','E','H','L','M','P','R','S','T']
+            if character in char_month:
+                return character
+            else:
+                index = 4
+                return char_month[index]
+
+        def generate_fiscal_code(characters, numbers):
+            separator = ''
+            generate_fiscal_code = separator.join(characters[0:6]) + separator.join(numbers[0:2]) + check_month(characters[8]) + separator.join(check_day(numbers)) + characters[11] + separator.join(numbers[6:9]) + characters[12]
+            return generate_fiscal_code
+        
+        split_string = []
+        n=2
+        for index in range(0, len(crypt_fiscal_code), n):
+            split_string.append(crypt_fiscal_code[index : index + n])
+
+        characters=[]
+        
+        for digit in split_string:
+            digit_hex = int(digit, 16)
+            digit_char = digit_hex % 26
+            character = chr(ord('A')+digit_char)
+            characters.append(character)
+
+        numbers=[]
+        for digit in split_string[6:]:
+            digit_hex = int(digit, 16)
+            digit_char = digit_hex % 10
+            numbers.append(str(digit_char))
+
+        generate_fiscal_code = generate_fiscal_code(characters, numbers)
+        return generate_fiscal_code
+
+class VatNumberProvider(with_metaclass(ProviderMeta, Provider)):
+    """Provider to hash a vat number."""
+
+    id = 'vatnumber'
+
+    def alter_value(self, value):
+        vatnumber=value[2:]
+        crypt_vat_number=md5(vatnumber.encode('utf-8')).hexdigest()
+
+        split_string = []
+        n=2
+        for index in range(0, len(crypt_vat_number), n):
+            split_string.append(crypt_vat_number[index : index + n])
+
+        numbers=[]
+        for digit in split_string:
+            digit_hex = int(digit, 16)
+            digit_char = digit_hex % 10
+            numbers.append(str(digit_char))
+
+        separator = ''
+        generate_vat_number = 'IT'+separator.join(numbers[0:9])
+        return generate_vat_number
+
+class VatNumberProvider(with_metaclass(ProviderMeta, Provider)):
+    """Provider to hash a vat number."""
+
+    id = 'fiscalcodebusiness'
+
+    def alter_value(self, value):
+        fiscalcode_business=value[0:]
+        crypt_fiscalcode_business=md5(fiscalcode_business.encode('utf-8')).hexdigest()
+
+        split_string = []
+        n=2
+        for index in range(0, len(crypt_fiscalcode_business), n):
+            split_string.append(crypt_fiscalcode_business[index : index + n])
+
+        numbers=[]
+        for digit in split_string:
+            digit_hex = int(digit, 16)
+            digit_char = digit_hex % 10
+            numbers.append(str(digit_char))
+
+        separator = ''
+        generate_fiscalcode_business = separator.join(numbers[0:9])
+        return generate_fiscalcode_business
+        
+class VatNumberProvider(with_metaclass(ProviderMeta, Provider)):
+    """Provider to hash a vat number."""
+
+    id = 'fiscalcodevat'
+
+    def alter_value(self, value):
+
+        if(value[0].isdigit()):
+            #code for fiscalcode legal entity 
+            fiscalcode_business=value[0:]
+            crypt_fiscalcode_business=md5(fiscalcode_business.encode('utf-8')).hexdigest()
+
+            split_string = []
+            n=2
+            for index in range(0, len(crypt_fiscalcode_business), n):
+                split_string.append(crypt_fiscalcode_business[index : index + n])
+
+            numbers=[]
+            for digit in split_string:
+                digit_hex = int(digit, 16)
+                digit_char = digit_hex % 10
+                numbers.append(str(digit_char))
+
+            separator = ''
+            generate_fiscalcode_business = separator.join(numbers[0:9])
+            return generate_fiscalcode_business
+        else:
+            #code for fiscalcode natural person
+            crypt_fiscal_code=md5(value.encode('utf-8')).hexdigest()
+
+            def check_day(numbers):
+                if(int(numbers[3])>7):
+                    numbers[3]=str(1)
+                return numbers[3:5]
+        
+            def check_month(character):
+                char_month = ['A','B','C','D','E','H','L','M','P','R','S','T']
+                if character in char_month:
+                    return character
+                else:
+                    index = 4
+                    return char_month[index]
+
+            def generate_fiscal_code(characters, numbers):
+                separator = ''
+                generate_fiscal_code = separator.join(characters[0:6]) + separator.join(numbers[0:2]) + check_month(characters[8]) + separator.join(check_day(numbers)) + characters[11] + separator.join(numbers[6:9]) + characters[12]
+                return generate_fiscal_code
+        
+            split_string = []
+            n=2
+            for index in range(0, len(crypt_fiscal_code), n):
+                split_string.append(crypt_fiscal_code[index : index + n])
+
+            characters=[]
+        
+            for digit in split_string:
+                digit_hex = int(digit, 16)
+                digit_char = digit_hex % 26
+                character = chr(ord('A')+digit_char)
+                characters.append(character)
+
+            numbers=[]
+            for digit in split_string[6:]:
+                digit_hex = int(digit, 16)
+                digit_char = digit_hex % 10
+                numbers.append(str(digit_char))
+
+            generate_fiscal_code = generate_fiscal_code(characters, numbers)
+            return generate_fiscal_code
+
+class SetProvider(with_metaclass(ProviderMeta, Provider)):
+    """Provider to set a random value for phone number."""
+
+    id = 'phonenumberita'
+
+    def alter_value(self, value):
+        prefix='+393'
+        return prefix.join([str(random.randint(0, 9)) for x in range(0,8)])
+
+class SetProvider(with_metaclass(ProviderMeta, Provider)):
+    """Provider to set a random uuid"""
+
+    id = 'apikey'
+
+    def alter_value(self, value):
+        return uuid.uuid4()
 
 class SetProvider(with_metaclass(ProviderMeta, Provider)):
     """Provider to set a static value."""
