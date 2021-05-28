@@ -287,7 +287,7 @@ class SetProvider(with_metaclass(ProviderMeta, Provider)):
     id = 'phonenumberita'
 
     def alter_value(self, value):
-        prefix='+393'
+        prefix='+003'
         return prefix.join([str(random.randint(0, 9)) for x in range(0,8)])
 
 class SetProvider(with_metaclass(ProviderMeta, Provider)):
