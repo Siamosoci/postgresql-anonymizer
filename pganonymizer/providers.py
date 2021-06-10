@@ -288,7 +288,7 @@ class SetProvider(with_metaclass(ProviderMeta, Provider)):
 
     def alter_value(self, value):
         prefix='+003'
-        return prefix.join([str(random.randint(0, 9)) for x in range(0,8)])
+        return prefix+''.join([str(random.randint(0, 9)) for x in range(0,9)])
 
 class SetProvider(with_metaclass(ProviderMeta, Provider)):
     """Provider to set a random uuid"""
