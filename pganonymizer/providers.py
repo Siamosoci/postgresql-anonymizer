@@ -1,4 +1,5 @@
 import random
+import string
 import uuid
 from hashlib import md5
 
@@ -289,6 +290,16 @@ class SetProvider(with_metaclass(ProviderMeta, Provider)):
     def alter_value(self, value):
         prefix='+003'
         return prefix+''.join([str(random.randint(0, 9)) for x in range(0,9)])
+
+class SetProvider(with_metaclass(ProviderMeta, Provider)):
+    """Provider to set a random value for id card."""
+
+    id = 'randomidcard'
+
+    def alter_value(self, value):
+        chars = ''.join(random.choice(string.ascii_letters).upper() for x in range(2))
+        numbers =''.join([str(random.randint(0, 9)) for x in range(7)])
+        return chars+numbers
 
 class SetProvider(with_metaclass(ProviderMeta, Provider)):
     """Provider to set a random uuid"""
